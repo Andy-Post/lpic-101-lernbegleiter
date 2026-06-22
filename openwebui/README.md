@@ -1,6 +1,6 @@
 # Open WebUI Setup
 
-Anleitung fuer den Betrieb des LPIC-101 Lernbegleiters mit Open WebUI und einem lokalen Sprachmodell.
+Anleitung für den Betrieb des LPIC-101 Lernbegleiters mit Open WebUI und einem lokalen Sprachmodell.
 
 ---
 
@@ -14,7 +14,7 @@ Anleitung fuer den Betrieb des LPIC-101 Lernbegleiters mit Open WebUI und einem 
 
 ## Modellempfehlung
 
-Fuer dieses Projekt eignen sich Modelle mit breitem Faktenwissen und guter Instruktionstreue.
+Für dieses Projekt eignen sich Modelle mit breitem Faktenwissen und guter Instruktionstreue.
 
 Getestete Optionen:
 
@@ -26,7 +26,7 @@ Getestete Optionen:
 | Llama3.1 | 8B | nicht empfohlen |
 | Gemma4 | 8B | nicht empfohlen |
 
-Modelle unter 27B halten sich bei komplexen Mehrschicht-Anweisungen (Sokratik, keine Monologe, Fehler als Wiederholungsanlass) erfahrungsgemaess nicht zuverlaessig an die Instruktionen.
+Modelle unter 27B halten sich bei komplexen Mehrschicht-Anweisungen (Sokratik, keine Monologe, Fehler als Wiederholungsanlass) erfahrungsgemaess nicht zuverlässig an die Instruktionen.
 
 ---
 
@@ -69,7 +69,7 @@ Starte eine neue LPIC-Lernsession. Welche Phase bin ich gerade in und was war da
 
 ## Bekannte Einschraenkungen gegenueber Claude Projects
 
-- RAG (Retrieval Augmented Generation): Open WebUI laedt nur relevante Chunks aus den Knowledge-Dateien, nicht den vollstaendigen Kontext. Das kann bei phasenubergreifenden Fragen zu Luecken fuehren.
+- RAG (Retrieval Augmented Generation): Open WebUI laedt nur relevante Chunks aus den Knowledge-Dateien, nicht den vollständigen Kontext. Das kann bei phasenubergreifenden Fragen zu Luecken fuehren.
 - Instruktionstreue: Lokale Modelle verlassen die Sokratik-Regeln gelegentlich. In diesem Fall explizit darauf hinweisen: "Frag mich zuerst, was ich vermute."
 - Kein bash_tool: Die Zeitstempel-Funktion im System Prompt (TZ=Europe/Berlin date) funktioniert in Open WebUI nicht. Den entsprechenden Abschnitt im System Prompt ggf. entfernen oder ignorieren.
 
@@ -77,4 +77,4 @@ Starte eine neue LPIC-Lernsession. Welche Phase bin ich gerade in und was war da
 
 ## Hinweis zu Datenschutz
 
-Bei Betrieb auf einem firmeneigenen Open-WebUI-Server: alle Eingaben sind fuer die Administratoren der Instanz potenziell sichtbar. Keine persoenlichen Daten eingeben.
+Bei Betrieb auf einem firmeneigenen Open-WebUI-Server: alle Eingaben sind für die Administratoren der Instanz potenziell sichtbar. Keine persoenlichen Daten eingeben.

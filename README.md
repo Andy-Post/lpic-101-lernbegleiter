@@ -98,26 +98,26 @@ Gesamtumfang: ca. 20 Wochen bei 30 Minuten täglich.
 
 ## Fortschritts-Tracker (tracker.html)
 
-Die Datei `tracker.html` ist ein einfacher, vollstaendig manueller Fortschritts-Tracker.
-Er laeuft ausschliesslich im Browser -- kein Server, kein Build-Schritt, keine Abhaengigkeiten.
+Die Datei `tracker.html` ist ein einfacher, vollständig manueller Fortschritts-Tracker.
+Er läuft ausschliesslich im Browser -- kein Server, kein Build-Schritt, keine Abhängigkeiten.
 
 **Bedienung:**
 
-- Datei lokal im Browser oeffnen (`Datei > Oeffnen` oder Drag & Drop)
+- Datei lokal im Browser oeffnen (`Datei > Öffnen` oder Drag & Drop)
 - Sessions per Klick als erledigt markieren
 - Phasenprüfungen mit `pass` oder `fail` kennzeichnen
 - Der Gesamtfortschritt wird als Balken und Prozentwert angezeigt
 
 Der Tracker generiert am unteren Rand einen "sessionstart-block": einen kompakten Statustext,
 der per Knopfdruck in die Zwischenablage kopiert und am Anfang einer neuen Claude-Session
-eingefuegt werden kann, damit der Lernbegleiter den aktuellen Stand kennt.
+eingefügt werden kann, damit der Lernbegleiter den aktuellen Stand kennt.
 
 **Wichtiger Hinweis:** Der Tracker speichert alle Daten im `localStorage` des Browsers.
 Das bedeutet:
 
-- Daten sind nur im selben Browser auf demselben Geraet verfuegbar
-- Kein automatisches Backup -- bei geloeschtem Browser-Datenspeicher sind die Daten weg
-- Wer den Stand sichern will, kopiert den sessionstart-block regelmaessig in eine Textdatei
+- Daten sind nur im selben Browser auf demselben Geraet verfügbar
+- Kein automatisches Backup -- bei gelöschtem Browser-Datenspeicher sind die Daten weg
+- Wer den Stand sichern will, kopiert den sessionstart-block regelmässig in eine Textdatei
 
 Der Tracker ersetzt keine automatische Fortschrittsverfolgung -- er ist bewusst einfach gehalten.
 

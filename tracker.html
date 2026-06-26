@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPIC-101 Fortschritts-Tracker</title>
+<style>
+  :root {
+    --bg:       #0f0f0f;
+    --bg2:      #181818;
+    --bg3:      #222;
+    --border:   #2e2e2e;
+    --text:     #d4d4d4;
+    --muted:    #666;
+    --accent:   #4a9eff;
+    --green:    #3fb950;
+    --red:      #f85149;
+    --mono:     'Courier New', Courier, monospace;
+    --sans:     'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
+  .shell { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Header */
+  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap; }
+  .title { font-family: var(--mono); font-size: 15px; color: var(--text); letter-spacing: 0.03em; }
+  .title span { color: var(--accent); }
+  .subline { font-size: 12px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
+
+  /* Buttons */
+  .btn { font-family: var(--mono); font-size: 12px; padding: 5px 14px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg2); color: var(--muted); cursor: pointer; transition: all .15s; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { border-color: var(--accent); color: var(--accent); }
+  .btn.primary:hover { background: rgba(74,158,255,.1); }
+  .btn.ok { border-color: var(--green); color: var(--green); background: rgba(63,185,80,.1); }
+  .btn.fail { border-color: var(--red); color: var(--red); background: rgba(248,81,73,.1); }
+
+  /* Progress bar */
+  .progress-wrap { margin-bottom: 1.5rem; }
+  .progress-meta { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+  .bar { height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s ease; }
+
+  /* Phase tabs */
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 1.25rem; }
+  .tab { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 2px; background: transparent; color: var(--muted); cursor: pointer; transition: all .15s; }
+  .tab:hover { color: var(--text); border-color: #444; }
+  .tab.active { border-color: var(--accent); color: var(--accent); background: rgba(74,158,255,.07); }
+  .tab.done { border-color: var(--green); color: var(--green); }
+  .tab.done.active { background: rgba(63,185,80,.07); }
+
+  /* Phase block */
+  .phase-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; gap: 8px; }
+  .phase-title { font-size: 14px; font-weight: 500; }
+  .phase-goal { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .phase-stat { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+  /* Sessions */
+  .sessions { display: flex; flex-direction: column; gap: 1px; margin-top: 0.75rem; }
+  .srow { display: flex; align-items: center; gap: 8px; padding: 6px 6px; border-radius: 3px; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; transition: background .1s; }
+  .srow:hover { background: var(--bg2); }
+  .srow.done .stitle { color: var(--muted); }
+  .box { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 2px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all .15s; }
+  .srow.done .box { background: rgba(63,185,80,.15); border-color: var(--green); color: var(--green); }
+  .sid { font-family: var(--mono); font-size: 11px; color: var(--muted); min-width: 22px; text-align: right; flex-shrink: 0; }
+  .stitle { font-size: 13px; flex: 1; }
+  .sdate { font-family: var(--mono); font-size: 10px; color: var(--muted); flex-shrink: 0; }
+
+  /* Exam block */
+  .exam { margin-top: 0.75rem; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .exam-label { font-size: 12px; font-weight: 500; font-family: var(--mono); }
+  .exam-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .exam-btns { display: flex; gap: 5px; }
+  .ebtn { font-family: var(--mono); font-size: 11px; padding: 3px 10px; border: 1px solid var(--border); border-radius: 2px; cursor: pointer; background: transparent; color: var(--muted); transition: all .15s; }
+  .ebtn:hover { color: var(--text); border-color: #444; }
+  .ebtn.pass { border-color: var(--green); color: var(--green); background: rgba(63,185,80,.1); }
+  .ebtn.fail { border-color: var(--red); color: var(--red); background: rgba(248,81,73,.1); }
+
+  /* Export block */
+  .export { margin-top: 1.5rem; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+  .export-head { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+  .export-label { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .export-text { padding: 10px 12px; font-family: var(--mono); font-size: 11px; line-height: 1.7; white-space: pre-wrap; color: var(--text); background: var(--bg); }
+
+  /* Footer */
+  .footer { margin-top: 1rem; font-family: var(--mono); font-size: 10px; color: #333; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="header">
+    <div>
+      <div class="title"><span>$</span> lpic101-tracker</div>
+      <div class="subline" id="subline">initialisiere...</div>
+    </div>
+    <button class="btn primary" id="copyBtn" onclick="copyStatus()">[ status kopieren ]</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span>gesamt-fortschritt</span>
+      <span id="totalPct">0 / 42</span>
+    </div>
+    <div class="bar"><div class="bar-fill" id="totalBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="phaseContent"></div>
+
+  <div class="export">
+    <div class="export-head">
+      <span class="export-label">// sessionstart-block</span>
+      <button class="btn" style="font-size:10px;padding:3px 8px" onclick="copyStatus()">kopieren</button>
+    </div>
+    <div class="export-text" id="exportText">...</div>
+  </div>
+
+  <div class="footer" id="footer"></div>
+</div>
+
+<script>
+const PLAN = [
+  { phase:1, title:"Shell Foundation", goal:"Sicheres Bewegen im Dateisystem",
+    sessions:[
+      {id:1,  title:"pwd, ls, cd, stat, file / Pfade"},
+      {id:2,  title:"cp, mv, rm, touch, mkdir, rmdir"},
+      {id:3,  title:"cat, less, more, head, tail, wc"},
+      {id:4,  title:"find, locate, which, type, whereis"},
+      {id:5,  title:"man, apropos, whatis, info, --help"},
+    ], examId:"p1" },
+  { phase:2, title:"Textverarbeitung & Streams", goal:"Daten verarbeiten und kombinieren",
+    sessions:[
+      {id:6,  title:"grep, egrep, fgrep + Regex"},
+      {id:7,  title:"cut, sort, uniq, tr, wc"},
+      {id:8,  title:"Streams & Umleitungen (stdin/stdout/stderr)"},
+      {id:9,  title:"sed"},
+      {id:10, title:"awk"},
+    ], examId:"p2" },
+  { phase:3, title:"Prozesse & Jobs", goal:"Prozesse steuern und automatisieren",
+    sessions:[
+      {id:11, title:"ps, top, htop, pstree"},
+      {id:12, title:"kill, killall, pkill / Signals"},
+      {id:13, title:"Jobs: &, fg, bg, nohup, disown"},
+      {id:14, title:"cron und at"},
+    ], examId:"p3" },
+  { phase:4, title:"Rechte & Benutzer", goal:"Berechtigungen und Benutzerverwaltung",
+    sessions:[
+      {id:15, title:"chmod (symbolisch + numerisch), umask"},
+      {id:16, title:"chown, chgrp"},
+      {id:17, title:"useradd, usermod, userdel, groupadd"},
+      {id:18, title:"su, sudo, SUID, SGID, Sticky Bit"},
+      {id:19, title:"ln: Hard Links vs. Symbolic Links"},
+    ], examId:"p4" },
+  { phase:5, title:"Filesysteme", goal:"Partitionen, Dateisysteme, Swap",
+    sessions:[
+      {id:20, title:"MBR vs. GPT, fdisk, parted, lsblk, blkid"},
+      {id:21, title:"mkfs, mount, umount, /etc/fstab"},
+      {id:22, title:"df, du, fsck, tune2fs"},
+      {id:23, title:"swapon, swapoff, mkswap, /proc/swaps"},
+    ], examId:"p5" },
+  { phase:6, title:"Paketmanagement", goal:"Debian- und RPM-basierte Systeme",
+    sessions:[
+      {id:24, title:"dpkg: -i, -r, -l, -L, -S, --status"},
+      {id:25, title:"apt: install, remove, purge, update, upgrade"},
+      {id:26, title:"rpm: -i, -e, -q, -ql, -qf"},
+      {id:27, title:"yum und dnf"},
+    ], examId:"p6" },
+  { phase:7, title:"Shell Scripting", goal:"Scripts schreiben und debuggen",
+    sessions:[
+      {id:28, title:"Variablen, Umgebungsvariablen, Quoting"},
+      {id:29, title:"if/then/else, test, [ ], case/esac, $?"},
+      {id:30, title:"for, while, until, break, continue"},
+      {id:31, title:"Funktionen, Parameter, trap"},
+    ], examId:"p7" },
+  { phase:8, title:"Boot & System", goal:"Bootsequenz, GRUB, systemd, SysV",
+    sessions:[
+      {id:32, title:"BIOS/UEFI, GRUB2: grub.cfg, update-grub"},
+      {id:33, title:"Bootsequenz, Kernel-Parameter, initrd"},
+      {id:34, title:"systemd: systemctl, Units, Targets, journalctl"},
+      {id:35, title:"SysV-Runlevel 0-6, /etc/init.d, chkconfig"},
+    ], examId:"p8" },
+  { phase:9, title:"Hardware & System-Internals", goal:"Hardware, Module, Libraries, FHS",
+    sessions:[
+      {id:36, title:"lspci, lsusb, lscpu, dmesg, /proc, /sys"},
+      {id:37, title:"Kernel-Module: lsmod, modprobe, insmod"},
+      {id:38, title:"Shared Libraries: ldd, ldconfig, LD_LIBRARY_PATH"},
+      {id:39, title:"FHS: /bin, /sbin, /usr, /var, /etc, /proc ..."},
+    ], examId:"p9" },
+  { phase:10, title:"Netzwerk-Grundlagen", goal:"Interfaces, DNS, Diagnose",
+    sessions:[
+      {id:40, title:"ip addr/link/route, ifconfig, /etc/netplan"},
+      {id:41, title:"/etc/hosts, /etc/resolv.conf, dig, host"},
+      {id:42, title:"ping, traceroute, ss, netstat, curl, wget"},
+    ], examId:"p10" },
+  { phase:11, title:"Abschlussphase", goal:"2 Wochen Simulation, Zeitdruck, mind. 80%",
+    isFinal:true,
+    sessions:[
+      {id:43, title:"Simulation 1: gemischte Fragen alle Phasen"},
+      {id:44, title:"Simulation 2: Trickfragen + Distro-uebergreifend"},
+      {id:45, title:"Simulation 3: Zeitdruck (90 min / 60 Fragen)"},
+      {id:46, title:"Lueckenanalyse & Nacharbeit"},
+      {id:47, title:"Simulation 4: Komplettdurchgang"},
+      {id:48, title:"Finale Lueckenanalyse + letzter Review"},
+    ], examId:"p11" },
+];
+
+const KEY = "lpic101-tracker";
+const TOTAL = 42;
+let state = { sessions:{}, exams:{} };
+let activePhase = 1;
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) state = JSON.parse(raw);
+  } catch(e) {}
+  render();
+}
+
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function mainSessions() { return PLAN.slice(0,10).flatMap(p => p.sessions); }
+function doneSessions()  { return mainSessions().filter(s => state.sessions[s.id]?.done); }
+function nextSession()   { return mainSessions().find(s => !state.sessions[s.id]?.done); }
+
+function generateStatus() {
+  const done = doneSessions();
+  const next = nextSession();
+  const curP = next ? PLAN.find(p => p.sessions.some(s => s.id === next.id)) : null;
+  const examParts = PLAN.slice(0,10)
+    .filter(p => state.exams[p.examId])
+    .map(p => `P${p.phase}:${state.exams[p.examId].passed ? 'ok' : 'fail'}(${state.exams[p.examId].date})`)
+    .join(", ");
+  const lastDone = done.slice(-2).map(s => s.title).join(" | ");
+
+  let s = `[LPIC-101] Phase ${curP?.phase ?? 'Abschluss'} | Session ${next?.id ?? 42}/42 | ${done.length}/${TOTAL} erledigt`;
+  if (next) s += `\nNaechst: ${next.title}`;
+  if (lastDone) s += `\nZuletzt: ${lastDone}`;
+  if (examParts) s += `\nPruefungen: ${examParts}`;
+  return s;
+}
+
+function toggleSession(id) {
+  if (state.sessions[id]?.done) delete state.sessions[id];
+  else state.sessions[id] = { done:true, date: new Date().toISOString().slice(0,10) };
+  save(); render();
+}
+
+function toggleExam(examId, passed) {
+  if (state.exams[examId]?.passed === passed) delete state.exams[examId];
+  else state.exams[examId] = { passed, date: new Date().toISOString().slice(0,10) };
+  save(); render();
+}
+
+function copyStatus() {
+  const text = generateStatus();
+  navigator.clipboard.writeText(text).then(() => {
+    ['copyBtn'].forEach(id => {
+      const b = document.getElementById(id);
+      if (!b) return;
+      const orig = b.textContent;
+      b.textContent = '[ kopiert ]';
+      b.classList.add('ok');
+      setTimeout(() => { b.textContent = orig; b.classList.remove('ok'); }, 2000);
+    });
+  }).catch(() => {});
+}
+
+function render() {
+  const done = doneSessions().length;
+  const pct = Math.round((done / TOTAL) * 100);
+  document.getElementById("totalPct").textContent = `${done} / ${TOTAL}`;
+  document.getElementById("totalBar").style.width = `${pct}%`;
+
+  const next = nextSession();
+  const curP = next ? PLAN.find(p => p.sessions.some(s => s.id === next.id)) : null;
+  document.getElementById("subline").textContent = next
+    ? `phase ${curP.phase}  //  session ${next.id}  //  ${pct}% abgeschlossen`
+    : `42/42 erledigt -- abschlussphase`;
+
+  // Tabs
+  document.getElementById("tabs").innerHTML = PLAN.map(p => {
+    const pdone = p.sessions.filter(s => state.sessions[s.id]?.done).length;
+    const isAllDone = pdone === p.sessions.length;
+    const label = p.isFinal ? "final" : `p${p.phase}`;
+    const cls = [
+      "tab",
+      p.phase === activePhase ? "active" : "",
+      isAllDone ? "done" : ""
+    ].filter(Boolean).join(" ");
+    return `<button class="${cls}" onclick="setPhase(${p.phase})">${label} ${pdone}/${p.sessions.length}</button>`;
+  }).join("");
+
+  // Phase content
+  const phase = PLAN.find(p => p.phase === activePhase);
+  const pdone = phase.sessions.filter(s => state.sessions[s.id]?.done).length;
+  const ppct = Math.round((pdone / phase.sessions.length) * 100);
+  const exam = state.exams[phase.examId];
+
+  const rows = phase.sessions.map(s => {
+    const isDone = !!state.sessions[s.id]?.done;
+    const date = state.sessions[s.id]?.date || "";
+    return `<button class="srow${isDone ? ' done' : ''}" onclick="toggleSession(${s.id})">
+      <div class="box">${isDone ? '&check;' : ''}</div>
+      <span class="sid">${s.id}</span>
+      <span class="stitle">${s.title}</span>
+      ${date ? `<span class="sdate">${date}</span>` : ''}
+    </button>`;
+  }).join("");
+
+  const examLabel = phase.isFinal ? "abschlusspruefung" : `freitagspruefung phase ${activePhase}`;
+  const examSub  = phase.isFinal ? "mind. 80% konstant" : "10 fragen -- mind. 80%";
+  const passAct  = exam?.passed === true  ? " pass" : "";
+  const failAct  = exam?.passed === false ? " fail" : "";
+
+  document.getElementById("phaseContent").innerHTML = `
+    <div class="phase-head">
+      <div>
+        <div class="phase-title">${phase.title}</div>
+        <div class="phase-goal">${phase.goal}</div>
+      </div>
+      <div class="phase-stat">${pdone}/${phase.sessions.length} &nbsp; ${ppct}%</div>
+    </div>
+    <div class="progress-wrap" style="margin-bottom:0">
+      <div class="bar"><div class="bar-fill" style="width:${ppct}%;background:${ppct===100?'var(--green)':'var(--accent)'}"></div></div>
+    </div>
+    <div class="sessions">${rows}</div>
+    <div class="exam">
+      <div>
+        <div class="exam-label">// ${examLabel}</div>
+        <div class="exam-sub">${examSub}</div>
+      </div>
+      <div class="exam-btns">
+        <button class="ebtn${passAct}" onclick="toggleExam('${phase.examId}', true)">bestanden</button>
+        <button class="ebtn${failAct}" onclick="toggleExam('${phase.examId}', false)">nicht bestanden</button>
+      </div>
+    </div>`;
+
+  document.getElementById("exportText").textContent = generateStatus();
+
+  const ts = state.lastSaved ? `// zuletzt gespeichert: ${state.lastSaved}` : "// fortschritt wird automatisch in localStorage gespeichert";
+  document.getElementById("footer").textContent = ts;
+}
+
+function setPhase(n) { activePhase = n; render(); }
+
+load();
+</script>
+</body>
+</html>

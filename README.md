@@ -15,6 +15,7 @@ project-prompt.md            System Prompt für Claude Projects
 LPIC101_Lernplan.md          Strukturierter Lernplan (10 Phasen, 42 Sessions)
 LPIC1_Gesamtstrategie.md     Lernstrategie, Philosophie, Ressourcen
 SETUP.md                     Schritt-für-Schritt VM-Einrichtung (Debian ARM64 / UTM)
+tracker.html                 Manueller Fortschritts-Tracker (Browser, kein Server)
 knowledge/                   Wissensdateien pro LPIC-Topic (101.1 bis 104.7)
 openwebui/                   Anleitung für Open WebUI + lokale Modelle
 ```
@@ -92,6 +93,33 @@ Sessions dauern typischerweise 30 Minuten. Freitags gibt es eine Phasenprüfung 
 | 10 | Netzwerk-Grundlagen | 40-42 |
 
 Gesamtumfang: ca. 20 Wochen bei 30 Minuten täglich.
+
+---
+
+## Fortschritts-Tracker (tracker.html)
+
+Die Datei `tracker.html` ist ein einfacher, vollstaendig manueller Fortschritts-Tracker.
+Er laeuft ausschliesslich im Browser -- kein Server, kein Build-Schritt, keine Abhaengigkeiten.
+
+**Bedienung:**
+
+- Datei lokal im Browser oeffnen (`Datei > Oeffnen` oder Drag & Drop)
+- Sessions per Klick als erledigt markieren
+- Phasenprüfungen mit `pass` oder `fail` kennzeichnen
+- Der Gesamtfortschritt wird als Balken und Prozentwert angezeigt
+
+Der Tracker generiert am unteren Rand einen "sessionstart-block": einen kompakten Statustext,
+der per Knopfdruck in die Zwischenablage kopiert und am Anfang einer neuen Claude-Session
+eingefuegt werden kann, damit der Lernbegleiter den aktuellen Stand kennt.
+
+**Wichtiger Hinweis:** Der Tracker speichert alle Daten im `localStorage` des Browsers.
+Das bedeutet:
+
+- Daten sind nur im selben Browser auf demselben Geraet verfuegbar
+- Kein automatisches Backup -- bei geloeschtem Browser-Datenspeicher sind die Daten weg
+- Wer den Stand sichern will, kopiert den sessionstart-block regelmaessig in eine Textdatei
+
+Der Tracker ersetzt keine automatische Fortschrittsverfolgung -- er ist bewusst einfach gehalten.
 
 ---
 
